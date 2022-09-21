@@ -1,6 +1,6 @@
 package com.dream.container.anno;
 
-import com.dream.container.Params;
+import com.dream.container.LaunchParams;
 
 import java.lang.annotation.*;
 
@@ -10,5 +10,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ToContainer
 {
-    String uid() default Params.DEFAULT_UID;
+    String uid() default LaunchParams.DEFAULT_UID;
 }

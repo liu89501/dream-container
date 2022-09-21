@@ -2,7 +2,7 @@ package com.dream.container.handler;
 
 import com.dream.container.anno.Component;
 
-@Component(proxy = false, instant = true, uid = "Default")
+@Component(proxy = false, uid = "Default")
 public class ArgParserDefault implements LaunchArgsParser
 {
     @Override

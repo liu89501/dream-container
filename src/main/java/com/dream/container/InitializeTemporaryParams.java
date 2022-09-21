@@ -1,16 +1,15 @@
 package com.dream.container;
 
-import com.dream.container.handler.LaunchArgumentsHandler;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InitializeTemporaryParams
 {
     private final ComponentContainer componentContainer;
 
-    private final ComponentContainer instantComponents;
-
-    private List<DependenceHandler> dependenceHandlers;
+    private final List<DependenceHandler> dependenceHandlers;
 
     private DatabaseManager databaseManager;
 
@@ -19,13 +18,11 @@ public class InitializeTemporaryParams
     private final Map<Class<? extends  Container>, Container> customizeContainers;
 
     public InitializeTemporaryParams(ComponentContainer componentContainer,
-                                     ComponentContainer instantComponents,
                                      List<Class<? extends DependenceHandler>> depHandlerDefs,
                                      List<Class<? extends Container>> containerClasses,
                                      Class<? extends DatabaseManager> databaseManagerClass) throws Exception
     {
         this.componentContainer = componentContainer;
-        this.instantComponents = instantComponents;
         this.postProcessorContainer = new ProxyPostProcessorContainer();
 
         this.dependenceHandlers = new ArrayList<>();
@@ -66,11 +63,6 @@ public class InitializeTemporaryParams
     public ComponentContainer getComponentContainer()
     {
         return componentContainer;
-    }
-
-    public ComponentContainer getInstantComponents()
-    {
-        return instantComponents;
     }
 
     public List<DependenceHandler> getDependenceHandlers()

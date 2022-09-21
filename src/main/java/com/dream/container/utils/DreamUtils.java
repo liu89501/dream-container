@@ -5,6 +5,7 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 
@@ -32,6 +33,49 @@ public interface DreamUtils
         return null;
     }
 
+    @SuppressWarnings("unchecked")
+    static <T extends Annotation> AnnotationResult<T> queryAnnotation(Method method, Class<T> anno)
+    {
+        Annotation[] declaredAnnotations = method.getDeclaredAnnotations();
+
+        for (Annotation declaredAnnotation : declaredAnnotations)
+        {
+            if (declaredAnnotation.annotationType() == anno)
+            {
+                return new AnnotationResult<T>(declaredAnnotation, (T)declaredAnnotation);
+            }
+
+            T parent = findAnnotation(declaredAnnotation.annotationType(), anno);
+            if (parent != null)
+            {
+                return new AnnotationResult<T>(declaredAnnotation, parent);
+            }
+        }
+
+        return null;
+    }
+
+    static <T extends Annotation> T findAnnotation(Class<?> clazz, Class<T> anno)
+    {
+        if (clazz.isAnnotationPresent(anno))
+        {
+            return clazz.getDeclaredAnnotation(anno);
+        }
+
+        Annotation[] declaredAnnotations = clazz.getDeclaredAnnotations();
+
+        for (Annotation declaredAnnotation : declaredAnnotations)
+        {
+            T annotation = findAnnotation(declaredAnnotation.annotationType(), anno);
+            if (annotation != null)
+            {
+                return annotation;
+            }
+        }
+
+        return null;
+    }
+
 
     @SuppressWarnings("unchecked")
     static <T> T createProxyObject(Class<T> clazz, Callback callbackHandler)
@@ -44,7 +88,7 @@ public interface DreamUtils
 
     static URL getResource(String resource)
     {
-        List<ClassLoader> classLoaders = List.of(
+        List<ClassLoader> classLoaders = Arrays.asList(
                 ClassLoader.getSystemClassLoader(),
                 DreamUtils.class.getClassLoader(),
                 Thread.currentThread().getContextClassLoader()
@@ -55,7 +99,7 @@ public interface DreamUtils
                 .filter(Objects::nonNull)
                 .findFirst();
 
-        return firstResource.orElseThrow();
+        return firstResource.orElse(null);
     }
 
     static boolean isCommonType(Class<?> clazz)

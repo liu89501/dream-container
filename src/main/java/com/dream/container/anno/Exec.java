@@ -14,8 +14,5 @@ public @interface Exec
      */
     EExecPriority value() default EExecPriority.LOW;
 
-    /**
-     *  是否用一个单独的线程来运行, 一般用于会阻塞的任务, 比如某个网络服务
-     */
-    //boolean independentThread() default false;
+    EExecRunPriority runPriority() default EExecRunPriority.DEFAULT;
 }

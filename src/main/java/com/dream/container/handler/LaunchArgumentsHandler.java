@@ -4,7 +4,7 @@ import com.dream.container.anno.LaunchArg;
 import com.dream.container.ComponentContainer;
 import com.dream.container.DependenceHandler;
 import com.dream.container.InstanceDefinition;
-import com.dream.container.Params;
+import com.dream.container.LaunchParams;
 import com.dream.container.LogContainer;
 
 import java.lang.reflect.Field;
@@ -17,20 +17,30 @@ public class LaunchArgumentsHandler implements DependenceHandler
     private final List<LaunchArgsParser> Temporary_Parsers = new LinkedList<>();
 
     @Override
-    public void initializeComponents(ComponentContainer instantComponents, ComponentContainer defaultComponents)
+    public void initializeComponents(ComponentContainer defaultComponents)
     {
-        Map<String, InstanceDefinition> parsers = instantComponents.getComponentsFromParentClass(LaunchArgsParser.class);
+        Map<String, InstanceDefinition> parsers = defaultComponents.getComponentsFromParentClass(LaunchArgsParser.class);
         parsers.forEach((k, v) -> Temporary_Parsers.add((LaunchArgsParser)v.getInstance()));
     }
 
     @Override
     public boolean handle(Field dependenceField, InstanceDefinition ownerInstance) throws Exception
     {
+        if (!LaunchParams.hasLaunchArgs())
+        {
+            return false;
+        }
+
         if (dependenceField.isAnnotationPresent(LaunchArg.class))
         {
             LaunchArg launchArg = dependenceField.getAnnotation(LaunchArg.class);
 
-            String argValue = Params.getLaunchArg(launchArg.value());
+            String argValue = LaunchParams.getLaunchArg(launchArg.value());
+
+            if (argValue == null)
+            {
+                return false;
+            }
 
             Class<?> fieldType = dependenceField.getType();
 

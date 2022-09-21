@@ -23,14 +23,7 @@ public class DefaultComponentContainer implements ComponentContainer
     @Override
     public void add(Class<?> scannedComponentClass) throws Exception
     {
-        //Component component = DreamUtils.queryComponentAnnotation(scannedComponentClass);
-
         Component component = scannedComponentClass.getAnnotation(Component.class);
-
-        if (component == null)
-        {
-            throw new RuntimeException("not found annotation");
-        }
 
         Object instance = scannedComponentClass.getDeclaredConstructor().newInstance();
 
@@ -83,7 +76,7 @@ public class DefaultComponentContainer implements ComponentContainer
         for (InstanceDefinition instance : container.getInstances())
         {
             HashMap<String, InstanceDefinition> def = new HashMap<>();
-            def.put(Params.DEFAULT_UID, instance);
+            def.put(LaunchParams.DEFAULT_UID, instance);
 
             components.put(instance.getInstance().getClass(), def);
         }

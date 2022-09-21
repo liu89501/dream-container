@@ -5,8 +5,21 @@ import net.sf.cglib.proxy.InvocationHandler;
 
 import java.lang.reflect.Method;
 
-public record ProxyHandle(Object superInstance, Container proxyProcessorContainer, DatabaseManager databaseManager) implements InvocationHandler
+public class ProxyHandle implements InvocationHandler
 {
+    private Object superInstance;
+    private Container proxyProcessorContainer;
+    private DatabaseManager databaseManager;
+
+    public ProxyHandle(Object superInstance, Container proxyProcessorContainer, DatabaseManager databaseManager) {
+        this.superInstance = superInstance;
+        this.proxyProcessorContainer = proxyProcessorContainer;
+        this.databaseManager = databaseManager == null ? new EmptyDatabaseManager() : databaseManager;
+    }
+
+    public ProxyHandle() {
+    }
+
     @Override
     public Object invoke(Object o, Method method, Object[] objects) throws Throwable
     {
