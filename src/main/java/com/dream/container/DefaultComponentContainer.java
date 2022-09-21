@@ -33,7 +33,7 @@ public class DefaultComponentContainer implements ComponentContainer
         if (component.proxy())
         {
             Object proxyInstance = DreamUtils.createProxyObject(scannedComponentClass,
-                    new ProxyHandle(instance, temporaryParams.getPostProcessorContainer(), temporaryParams.getDatabaseManager()));
+                    new ProxyHandler(instance, temporaryParams.getPostProcessorContainer(), temporaryParams.getDatabaseManager()));
 
             definition.setProxyInstance(proxyInstance);
         }
